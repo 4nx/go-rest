@@ -52,8 +52,8 @@ type Client struct {
 	HTTPClient *http.Client
 }
 
-// AddContentType adds the json content type to the headers
-func AddContentType(request *http.Request, body []byte) *http.Request {
+// AddJSONContentType adds the json content type to the headers
+func AddJSONContentType(request *http.Request, body []byte) *http.Request {
 	_, exists := request.Header["Content-Type"]
 	if len(body) > 0 && !exists {
 		request.Header.Set("Content-Type", "application/json")
@@ -83,6 +83,15 @@ func CreateRequest(request Request) (*http.Request, error) {
 	for key, value := range request.Headers {
 		req.Header.Set(key, value)
 	}
-	req = AddContentType(req, request.Body)
+	req = AddJSONContentType(req, request.Body)
 	return req, err
+}
+
+//SendRequest sends the API request with the created object
+func SendRequest(request Request) (*Response, error) {
+	_, err := CreateRequest(request)
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
 }
