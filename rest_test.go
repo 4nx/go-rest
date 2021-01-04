@@ -20,26 +20,21 @@ func TestAddQueryParams(t *testing.T) {
 
 func TestAddContentType(t *testing.T) {
 	t.Parallel()
-	method := Get
+	method := "GET"
 	baseURL := "http://api.example.net"
-	body := []byte("")
-	request := Request{
-		Method:  method,
-		BaseURL: baseURL,
-		Body:    body,
-	}
-	req, _ := http.NewRequest(string(request.Method), request.BaseURL, bytes.NewBuffer(request.Body))
+	body1 := []byte("")
+	body2 := []byte("A")
+	req, _ := http.NewRequest(method, baseURL, bytes.NewBuffer(body1))
 
-	testRequestEmpty := AddContentType(req, request.Body)
+	testRequestEmpty := AddContentType(req, body1)
 	testHeaderEmpty := testRequestEmpty.Header.Get("Content-Type")
 	if testHeaderEmpty != "" {
-		t.Error("Bad AddContentType result")
+		t.Error("Bad AddContentType result: Content-Type header not empty")
 	}
 
-	request.Body = []byte("A")
-	testRequestBody := AddContentType(req, request.Body)
+	testRequestBody := AddContentType(req, body2)
 	testHeaderBody := testRequestBody.Header.Get("Content-Type")
 	if testHeaderBody != "application/json" {
-		t.Error("Bad AddContentType result")
+		t.Error("Bad AddContentType result: Content-Type header not application/json")
 	}
 }
