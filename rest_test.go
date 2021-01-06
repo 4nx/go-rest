@@ -22,6 +22,21 @@ var request = RequestData{
 	Body:        body,
 }
 
+func TestAddHeaders(t *testing.T) {
+	t.Parallel()
+	testKey1 := "testKey1"
+	testValue1 := "testValue1"
+	request.Headers = make(map[string]string)
+	request.Headers[testKey1] = testValue1
+
+	validHeaderRequest, _ := http.NewRequest(string(request.Method), request.BaseURL, nil)
+	AddHeaders(request.Headers, validHeaderRequest)
+	testValidHeader := validHeaderRequest.Header.Get(testKey1)
+	if testValidHeader != testValue1 {
+		t.Error(fmt.Sprintf("Bad AddHeaders result: header is not set correctly - should be %s", testValue1))
+	}
+}
+
 func TestAddJSONContentType(t *testing.T) {
 	t.Parallel()
 
@@ -37,20 +52,5 @@ func TestAddJSONContentType(t *testing.T) {
 	testNonEmptyBodyRequest := nonEmptyBodyRequest.Header.Get("Content-Type")
 	if testNonEmptyBodyRequest != "application/json" {
 		t.Error("Bad AddJSONContentType result: non empty body request created no Content-Type - should be application/json")
-	}
-}
-
-func TestAddHeaders(t *testing.T) {
-	t.Parallel()
-	testKey1 := "testKey1"
-	testValue1 := "testValue1"
-	request.Headers = make(map[string]string)
-	request.Headers[testKey1] = testValue1
-
-	validHeaderRequest, _ := http.NewRequest(string(request.Method), request.BaseURL, nil)
-	AddHeaders(request.Headers, validHeaderRequest)
-	testValidHeader := validHeaderRequest.Header.Get(testKey1)
-	if testValidHeader != testValue1 {
-		t.Error(fmt.Sprintf("Bad AddHeaders result: header is not set correctly - should be %s", testValue1))
 	}
 }

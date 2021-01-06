@@ -30,16 +30,16 @@ type RequestData struct {
 	Body        []byte
 }
 
-// AddJSONContentType adds JSON content type if body data will be send
-func AddJSONContentType(body []byte, request *http.Request) {
-	if len(body) > 0 {
-		request.Header.Set("Content-Type", "application/json")
-	}
-}
-
 // AddHeaders adds the provided headers to the request
 func AddHeaders(headers map[string]string, request *http.Request) {
 	for key, value := range headers {
 		request.Header.Set(key, value)
+	}
+}
+
+// AddJSONContentType adds JSON content type if body data will be send
+func AddJSONContentType(body []byte, request *http.Request) {
+	if len(body) > 0 {
+		request.Header.Set("Content-Type", "application/json")
 	}
 }
