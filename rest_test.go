@@ -29,28 +29,21 @@ func TestAddHeaders(t *testing.T) {
 	request.Headers = make(map[string]string)
 	request.Headers[testKey1] = testValue1
 
-	validHeaderRequest, _ := http.NewRequest(string(request.Method), request.BaseURL, nil)
-	AddHeaders(request.Headers, validHeaderRequest)
-	testValidHeader := validHeaderRequest.Header.Get(testKey1)
+	emptyBodyRequest, _ := http.NewRequest(string(request.Method), request.BaseURL, nil)
+	AddHeaders(request.Headers, []byte(""), emptyBodyRequest)
+	contentType := emptyBodyRequest.Header.Get("Content-Type")
+	if contentType == "application/json" || len(contentType) != 0 {
+		t.Error("Bad AddHeaders result: empty body request created Content-Type - should not exist")
+	}
+	testValidHeader := emptyBodyRequest.Header.Get(testKey1)
 	if testValidHeader != testValue1 {
 		t.Error(fmt.Sprintf("Bad AddHeaders result: header is not set correctly - should be %s", testValue1))
 	}
-}
-
-func TestAddJSONContentType(t *testing.T) {
-	t.Parallel()
-
-	emptyBodyRequest, _ := http.NewRequest(string(request.Method), request.BaseURL, nil)
-	AddJSONContentType([]byte(""), emptyBodyRequest)
-	contentType := emptyBodyRequest.Header.Get("Content-Type")
-	if contentType == "application/json" || len(contentType) != 0 {
-		t.Error("Bad AddJSONContentType result: empty body request created Content-Type - should not exist")
-	}
 
 	nonEmptyBodyRequest, _ := http.NewRequest(string(request.Method), request.BaseURL, nil)
-	AddJSONContentType([]byte("ABCDEFG"), nonEmptyBodyRequest)
+	AddHeaders(request.Headers, []byte("ABCDEFG"), nonEmptyBodyRequest)
 	testNonEmptyBodyRequest := nonEmptyBodyRequest.Header.Get("Content-Type")
 	if testNonEmptyBodyRequest != "application/json" {
-		t.Error("Bad AddJSONContentType result: non empty body request created no Content-Type - should be application/json")
+		t.Error("Bad AddHeaders result: non empty body request created no Content-Type - should be application/json")
 	}
 }
