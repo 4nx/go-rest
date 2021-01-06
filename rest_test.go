@@ -7,8 +7,8 @@ import (
 )
 
 var (
-	method      Method = Get
-	baseURL     string = "https://api.example.net"
+	method      = Get
+	baseURL     = "https://api.example.net"
 	headers     map[string]string
 	queryParams map[string]string
 	body        []byte
