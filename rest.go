@@ -2,6 +2,7 @@ package rest
 
 import (
 	"net/http"
+	"net/url"
 )
 
 // Method holds the support HTTP methods
@@ -42,4 +43,14 @@ func AddJSONContentType(body []byte, request *http.Request) {
 	if len(body) > 0 {
 		request.Header.Set("Content-Type", "application/json")
 	}
+}
+
+// AddQueryParams adds the query params to base URL
+func AddQueryParams(baseURL string, queryParams map[string]string) string {
+	baseURL += "?"
+	params := url.Values{}
+	for key, value := range queryParams {
+		params.Add(key, value)
+	}
+	return baseURL + params.Encode()
 }
