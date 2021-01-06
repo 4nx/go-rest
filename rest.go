@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"errors"
 	"net/http"
 )
 
@@ -32,25 +31,15 @@ type RequestData struct {
 }
 
 // AddJSONContentType adds JSON content type if body data will be send
-func AddJSONContentType(body []byte, request *http.Request) (*http.Request, error) {
-	_, exists := request.Header["Content-Type"]
-	if exists {
-		return nil, errors.New("content-type header is already set")
-	}
+func AddJSONContentType(body []byte, request *http.Request) {
 	if len(body) > 0 {
 		request.Header.Set("Content-Type", "application/json")
 	}
-	return request, nil
 }
 
 // AddHeaders adds the provided headers to the request
-func AddHeaders(headers map[string]string, request *http.Request) (*http.Request, error) {
+func AddHeaders(headers map[string]string, request *http.Request) {
 	for key, value := range headers {
 		request.Header.Set(key, value)
-		header := request.Header.Get(key)
-		if header != value {
-			return nil, errors.New("failed to add header")
-		}
 	}
-	return request, nil
 }
