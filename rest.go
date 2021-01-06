@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -54,7 +55,7 @@ func AddQueryParams(baseURL string, queryParams map[string]string) string {
 
 // BuildRequest creates the request
 func BuildRequest(requestData RequestData, request *http.Request) error {
-	req, err := http.NewRequest(string(requestData.Method), requestData.BaseURL, nil)
+	req, err := http.NewRequest(string(requestData.Method), requestData.BaseURL, bytes.NewBuffer(requestData.Body))
 	if err != nil {
 		return fmt.Errorf("failed to create new request: %v", err)
 	}
